@@ -1,0 +1,6 @@
+{
+  "name": "RAILBUS Members",
+  "description": "Progressive Web App pour les membres et actionnaires de RAILBUS Inc. - Suivi des actions, points de récompense, transactions, actualités et vitrine technologique solaire.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

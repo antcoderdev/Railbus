@@ -1,0 +1,70 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net (Pillar 1 - Default Deny)
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Hardened Helper Primitives
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'antcoder.dev@gmail.com' ||
+        (request.auth.token.email != null && request.auth.token.email.matches('.*@railbus\\.com$'))
+      );
+    }
+
+    // System Settings (Financial parameters, share prices, points rules)
+    match /system_settings/{settingId} {
+      allow get, list: if true; // Public read so all members & visitors see official share price
+      allow create, update, delete: if isAdmin() && isValidId(settingId);
+    }
+
+    // Member Profiles & Portfolios
+    match /members/{memberId} {
+      allow get: if isSignedIn() || true; // Allow member lookups
+      allow list: if isAdmin();
+      allow create: if (isSignedIn() && isValidId(memberId)) || isAdmin();
+      allow update: if (isSignedIn() && isValidId(memberId)) || isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Transactions (Deposits, Withdrawals, Shares, Points)
+    match /transactions/{transactionId} {
+      allow get, list: if true; // Members can view transaction records & live ticker
+      allow create: if (
+        request.resource.data.type is string &&
+        request.resource.data.type.size() <= 64 &&
+        request.resource.data.status is string &&
+        request.resource.data.status.size() <= 32
+      );
+      allow update, delete: if isAdmin();
+    }
+
+    // Contact and Investor Submissions
+    match /submissions/{submissionId} {
+      allow create: if (
+        request.resource.data.name is string &&
+        request.resource.data.name.size() <= 120 &&
+        request.resource.data.email is string &&
+        request.resource.data.email.size() <= 120
+      );
+      allow get, list, update, delete: if isAdmin();
+    }
+
+    // Administrative Demo Accounts & Simulated Archive Folder
+    match /demo_archives/{archiveId} {
+      allow read, write: if isAdmin() || isSignedIn();
+    }
+  }
+}

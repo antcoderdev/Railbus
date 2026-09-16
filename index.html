@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>RAILBUS Members</title>
+    <meta name="description" content="Progressive Web App pour les membres et actionnaires de RAILBUS Inc. - Suivi des actions, points de récompense, transactions, actualités et vitrine technologique solaire." />
+    <meta property="og:title" content="RAILBUS Members" />
+    <meta property="og:description" content="Application officielle des membres et actionnaires de RAILBUS Inc." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/pwa-512x512.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- PWA & Mobile Web App Meta -->
+    <meta name="theme-color" content="#000000" />
+    <meta name="background-color" content="#000000" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="RAILBUS" />
+
+    <!-- Manifest & Icons -->
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Google Fonts: Plus Jakarta Sans for body, Montserrat/Outfit for titles -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body class="bg-[#0A0A0A] text-white selection:bg-[#F2B01E] selection:text-black antialiased font-sans">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then((registration) => {
+              console.log('RAILBUS ServiceWorker registered with scope:', registration.scope);
+            })
+            .catch((error) => {
+              console.warn('RAILBUS ServiceWorker registration skipped/failed:', error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>
+
